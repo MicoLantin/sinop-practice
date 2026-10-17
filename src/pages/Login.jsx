@@ -30,27 +30,29 @@ function CardsIllustration() {
 }
 
 function Login() {
-  const [mobile, setMobile] = useState('')
-  const [mpin, setMpin] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(false)
   const [error, setError] = useState('')
 
   function handleSubmit(event) {
     event.preventDefault()
 
-    const digits = mobile.replace(/\D/g, '')
-    if (digits.length !== 10 || !digits.startsWith('9')) {
-      setError('Enter a valid 10-digit mobile number, like 917 123 4567.')
+    const trimmedEmail = email.trim()
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError('Enter a valid email address, like juan@email.com.')
       return
     }
-    if (!/^\d{4}$/.test(mpin)) {
-      setError('Your MPIN should be exactly 4 digits.')
+    if (password.length < 8) {
+      setError('Your password should be at least 8 characters.')
       return
     }
 
     setError('')
     // TODO: connect to the backend, e.g. POST `${import.meta.env.VITE_API_URL}/auth/login`
-    alert(`Logging in +63 ${digits} (demo only)`)
+    // with { email, password }. Never log or store the password in the browser.
+    alert(`Logging in ${trimmedEmail} (demo only)`)
   }
 
   return (
@@ -75,37 +77,41 @@ function Login() {
           </div>
 
           <div className="field">
-            <label htmlFor="mobile">Mobile number</label>
-            <div className="phone-row">
-              <span className="prefix">+63</span>
-              <input
-                id="mobile"
-                type="tel"
-                inputMode="numeric"
-                autoComplete="tel-national"
-                placeholder="917 123 4567"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-              />
-            </div>
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
           <div className="field">
             <div className="label-row">
-              <label htmlFor="mpin">MPIN</label>
-              <a href="#forgot">Forgot MPIN?</a>
+              <label htmlFor="password">Password</label>
+              <a href="#forgot">Forgot password?</a>
             </div>
-            <input
-              id="mpin"
-              className="mpin-input"
-              type="password"
-              inputMode="numeric"
-              maxLength={4}
-              autoComplete="current-password"
-              placeholder="••••"
-              value={mpin}
-              onChange={(e) => setMpin(e.target.value.replace(/\D/g, ''))}
-            />
+            <div className="password-row">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword((shown) => !shown)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
           </div>
 
           <label className="remember">
@@ -132,7 +138,7 @@ function Login() {
           </div>
 
           <button type="button" className="btn-secondary">
-            Send me a one-time code
+            Email me a sign-in link
           </button>
 
           <p className="signup">

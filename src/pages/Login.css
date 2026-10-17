@@ -105,21 +105,32 @@
   text-decoration: underline;
 }
 
-.phone-row {
+.password-row {
+  position: relative;
   display: flex;
-  gap: 8px;
 }
 
-.prefix {
-  height: 52px;
-  padding: 0 14px;
-  display: flex;
-  align-items: center;
-  border-radius: 14px;
-  border: 1.5px solid var(--border);
+.password-row input {
+  padding-right: 72px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 10px;
   background: var(--ground);
+  color: var(--ink);
+  font-size: 13px;
   font-weight: 700;
-  font-size: 15px;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  background: var(--mint-mid);
 }
 
 .field input {
@@ -143,11 +154,6 @@
 .field input:focus {
   border-color: var(--bright);
   box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
-}
-
-.mpin-input {
-  font-size: 18px !important;
-  letter-spacing: 6px;
 }
 
 .remember {
