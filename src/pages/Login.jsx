@@ -1,38 +1,13 @@
 import { useState } from 'react'
+import AuthLayout from '../components/AuthLayout.jsx'
+import PasswordInput from '../components/PasswordInput.jsx'
 import './Login.css'
 
-function Logo() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true">
-      <rect width="100" height="100" rx="28" fill="#14532D" />
-      <path
-        d="M63.9 26 A16 16 0 1 0 50 50 A16 16 0 1 1 36.1 74"
-        fill="none"
-        stroke="#FFFFFF"
-        strokeWidth="10"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function CardsIllustration() {
-  return (
-    <svg className="login-art" viewBox="0 0 280 280" role="img" aria-label="Stacked wallet cards">
-      <rect x="40" y="58" width="200" height="124" rx="22" fill="#1E3A2B" transform="rotate(-10 140 120)" />
-      <rect x="40" y="96" width="200" height="124" rx="22" fill="#FFFFFF" opacity="0.95" />
-      <rect x="60" y="116" width="44" height="32" rx="8" fill="#BEF264" />
-      <rect x="60" y="176" width="110" height="12" rx="6" fill="#86EFAC" />
-      <circle cx="210" cy="132" r="14" fill="#22C55E" />
-      <circle cx="192" cy="132" r="14" fill="#064E3B" opacity="0.8" />
-    </svg>
-  )
-}
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(false)
   const [error, setError] = useState('')
 
@@ -40,7 +15,7 @@ function Login() {
     event.preventDefault()
 
     const trimmedEmail = email.trim()
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+    if (!EMAIL_PATTERN.test(trimmedEmail)) {
       setError('Enter a valid email address, like juan@email.com.')
       return
     }
@@ -56,97 +31,76 @@ function Login() {
   }
 
   return (
-    <main className="login">
-      <section className="login-brand">
-        <div className="login-logo">
-          <Logo />
-          <span>sinop</span>
+    <AuthLayout
+      title="Save a little, every day."
+      subtitle="Send money, pay bills, and grow your savings, all in one place."
+    >
+      <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        <div className="auth-heading">
+          <h2>Log in to sinop</h2>
+          <p>Welcome back! Enter your details to continue.</p>
         </div>
-        <CardsIllustration />
-        <div className="login-pitch">
-          <h1>Save a little, every day.</h1>
-          <p>Send money, pay bills, and grow your savings, all in one place.</p>
+
+        <div className="field">
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
-      </section>
 
-      <section className="login-panel">
-        <form className="login-form" onSubmit={handleSubmit} noValidate>
-          <div className="login-heading">
-            <h2>Log in to sinop</h2>
-            <p>Welcome back! Enter your details to continue.</p>
+        <div className="field">
+          <div className="label-row">
+            <label htmlFor="password">Password</label>
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => alert('Password reset is coming soon.')}
+            >
+              Forgot password?
+            </button>
           </div>
+          <PasswordInput
+            id="password"
+            autoComplete="current-password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
-          <div className="field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+        <label className="check-row login-remember">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+          />
+          Remember this device
+        </label>
 
-          <div className="field">
-            <div className="label-row">
-              <label htmlFor="password">Password</label>
-              <a href="#forgot">Forgot password?</a>
-            </div>
-            <div className="password-row">
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowPassword((shown) => !shown)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                aria-pressed={showPassword}
-              >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
-            </div>
-          </div>
-
-          <label className="remember">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={(e) => setRemember(e.target.checked)}
-            />
-            Remember this device
-          </label>
-
-          {error && (
-            <p className="form-error" role="alert">
-              {error}
-            </p>
-          )}
-
-          <button type="submit" className="btn-primary">
-            Log in
-          </button>
-
-          <div className="divider">
-            <span>or</span>
-          </div>
-
-          <button type="button" className="btn-secondary">
-            Email me a sign-in link
-          </button>
-
-          <p className="signup">
-            New to sinop? <a href="#signup">Create an account</a>
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
           </p>
-        </form>
-      </section>
-    </main>
+        )}
+
+        <button type="submit" className="btn-primary">
+          Log in
+        </button>
+
+        <div className="divider">
+          <span>or</span>
+        </div>
+
+        <a href="#/signup" className="btn-secondary">
+          Create an account
+        </a>
+      </form>
+    </AuthLayout>
   )
 }
 
